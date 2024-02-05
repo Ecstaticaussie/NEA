@@ -10,10 +10,10 @@ class Window(tk.Tk):
         self.mainloop()
 
     def create_buttons(self):
-        beginning_algorithm = ttk.Button(self, text="«")
+        beginning_algorithm = ttk.Button(self, text="<<")
         previous_step = ttk.Button(self, text="<")
         next_step = ttk.Button(self, text=">")
-        end_algorithm = ttk.Button(self, text="»")
+        end_algorithm = ttk.Button(self, text=">>")
 
         beginning_algorithm.grid(row=1, column=0)
         previous_step.grid(row=1, column=1)
