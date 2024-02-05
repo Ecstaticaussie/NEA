@@ -12,12 +12,12 @@ class Window(tk.Tk):
     def create_buttons(self):
         beginning_algorithm = ttk.Button(self, text="<<")
         previous_step = ttk.Button(self, text="<")
+        generate_graph_Button = ttk.Button(self, text="Generate")
         next_step = ttk.Button(self, text=">")
         end_algorithm = ttk.Button(self, text=">>")
 
         beginning_algorithm.grid(row=1, column=0)
         previous_step.grid(row=1, column=1)
-        next_step.grid(row=1, column=2)
-        end_algorithm.grid(row=1, column=3)
-
-window1 = Window(("Decoding Dijkstra's"), (1100, 600))
+        generate_graph_Button.grid(row=1, column=2)
+        next_step.grid(row=1, column=3)
+        end_algorithm.grid(row=1, column=4)
