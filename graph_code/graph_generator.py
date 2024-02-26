@@ -1,18 +1,18 @@
 import networkx as nx
 from random import randint
 
-def graph_generator():
-    #A funciton for creating a graph object
-    def myGraphCreate(nodes, edges):
-        myGraph = nx.Graph()
-        myGraph.add_nodes_from(nodes)
-        myGraph.add_edges_from(edges)
-        return myGraph
+#A funciton for creating a graph object
+def myGraphCreate(nodes, edges):
+    myGraph = nx.Graph()
+    myGraph.add_nodes_from(nodes)
+    myGraph.add_edges_from(edges)
+    return myGraph
 
+def nodes_edges_generator():
     #initial graph variables
     myGraphBefore = nx.Graph()
-    numNodes = randint(8, 13)
-    numEdges = randint(numNodes+2, numNodes + 3)
+    numNodes = randint(7, 12)
+    numEdges = randint(numNodes+1, numNodes+2)
     nodeList = list(range(1, numNodes+1))
     edgeList = []
     #Used to create edges (see further down)
@@ -67,5 +67,13 @@ def graph_generator():
         if myGraphBefore.edges == myGraphAfter.edges: break
         myGraphBefore = myGraphAfter
 
+    return nodeList, edgeList
+
+#Where the label of the nodes are changed
+def graph_mapper():
+    nodeList, edgeList = nodes_edges_generator()
     myGraph = myGraphCreate(nodeList, edgeList)
-    return myGraph
+    graph_mapping = {str(nodeList[i-1]):str(i) for i in range(1, len(nodeList)+1)}
+    print(graph_mapping)
+    mappedGraph = nx.relabel_nodes(myGraph, graph_mapping)
+    return mappedGraph

@@ -1,3 +1,3 @@
 from window import Window
 
-my_window = Window(("Decoding Dijkstra's"), (1100, 600))
+my_window = Window(("Decoding Dijkstra's"), (472, 200))
