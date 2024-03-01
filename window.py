@@ -8,7 +8,7 @@ The libraries above are explained in my analysis
 """
 from graph_code.graph_generator import graph_mapper
 
-#Allows the graph to be updated
+#Allows the graph to be updated without closing and opening any windows
 mpl.use("TkAgg")
 plt.ion()
 
@@ -27,7 +27,7 @@ class Window(tk.Tk):
         #Creating buttons
         self.beginning_algorithm = ttk.Button(self, text="<<")
         self.previous_step = ttk.Button(self, text="<")
-        self.generate_graph_Button = ttk.Button(self, text="Generate", command=self.create_pop_up)
+        self.generate_graph_Button = ttk.Button(self, text="Generate", command=self.destroy_buttons)
         self.next_step = ttk.Button(self, text=">")
         self.end_algorithm = ttk.Button(self, text=">>")
 
@@ -37,41 +37,34 @@ class Window(tk.Tk):
         self.generate_graph_Button.grid(row=0, column=2)
         self.next_step.grid(row=0, column=3)
         self.end_algorithm.grid(row=0, column=4)
+
+    #Replaces the buttons with the pop up
+    def destroy_buttons(self):
+        self.beginning_algorithm.destroy()
+        self.previous_step.destroy()
+        self.generate_graph_Button.destroy()
+        self.next_step.destroy()
+        self.end_algorithm.destroy()
+        self.create_pop_up()
+
     
     #Creating the pop up and placing it when it's called
     def create_pop_up(self):
-        self.pop_up_frame = ttk.Frame(self)
-        self.ask_label = ttk.Label(self.pop_up_frame, text="Would you like to generate a new graph?")
-        self.yes_button = ttk.Button(self.pop_up_frame, text="Yes", command=self.create_random_graph)
-        self.no_button = ttk.Button(self.pop_up_frame, text="No", command=self.destroy_pop_up)
-
-        self.pop_up_frame.grid(row=1, column=0)
-        self.ask_label.grid(row=0, column=0)
+        self.ask_label = ttk.Label(self, text="Would you like to generate a new graph?")
+        self.yes_button = ttk.Button(self, text="Yes", command=self.create_random_graph)
+        self.no_button = ttk.Button(self, text="No", command=self.destroy_pop_up)
+        self.ask_label.grid(row=0, column=0, padx=100, columnspan=2)
         self.yes_button.grid(row=1, column=0)
         self.no_button.grid(row=1, column=1)
 
-        #Disabling the other buttons 
-        self.beginning_algorithm.state = tk.DISABLED
-        self.previous_step.state = tk.DISABLED
-        self.generate_graph_Button.state = tk.DISABLED
-        self.next_step.state = tk.DISABLED
-        self.end_algorithm.state = tk.DISABLED
-
-    #Destroys the pop up in the main window
+    #Destroys the pop up in the main window and replaces it with the other buttons
     #This is done instead of just removing the pop up from the main window as I don't need another method
     #to just add the pop up back to the main window
     def destroy_pop_up(self):
         self.ask_label.destroy()
         self.yes_button.destroy()
         self.no_button.destroy()
-        self.pop_up_frame.destroy()
-  
-        #Enabling the other buttons
-        self.beginning_algorithm.state = tk.NORMAL
-        self.previous_step.state = tk.NORMAL
-        self.generate_graph_Button.state = tk.NORMAL
-        self.next_step.state = tk.NORMAL
-        self.end_algorithm.state = tk.NORMAL
+        self.create_buttons()
 
     #Draws a graph in a seperate window
     def create_random_graph(self, remove_pop_up=True):
