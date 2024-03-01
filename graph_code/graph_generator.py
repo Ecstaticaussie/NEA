@@ -16,7 +16,7 @@ def nodes_edges_generator():
     nodeList = list(range(1, numNodes+1))
     edgeList = []
     #Used to create edges (see further down)
-    edgesCreatedPerNode = [randint(2,4) for _ in range(numNodes)]
+    edgesCreatedPerNode = [randint(3,4) for _ in range(numNodes)]
     midpoint = len(nodeList)//2 - 1
 
     #This is to act as a limit for the edges
@@ -73,7 +73,9 @@ def nodes_edges_generator():
 def graph_mapper():
     nodeList, edgeList = nodes_edges_generator()
     myGraph = myGraphCreate(nodeList, edgeList)
+    """
+    LOOK AT DEBUGGING THE MAPPING
+    """
     graph_mapping = {str(nodeList[i-1]):str(i) for i in range(1, len(nodeList)+1)}
-    print(graph_mapping)
     mappedGraph = nx.relabel_nodes(myGraph, graph_mapping)
     return mappedGraph
