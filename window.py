@@ -3,10 +3,11 @@ from tkinter import ttk
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import networkx as nx
+import scipy as sp
 """
 The libraries above are explained in my analysis
 """
-from graph_code.graph_generator import graph_mapper
+from graph_code.graph_adjuster import graph_mapper
 
 #Allows the graph to be updated without closing and opening any windows
 mpl.use("TkAgg")
@@ -21,7 +22,6 @@ class Window(tk.Tk):
         self.create_buttons()
         self.create_random_graph(remove_pop_up=False)
         self.mainloop()
-        self.iconbitmap()
 
     def create_buttons(self):
         #Creating buttons
@@ -71,5 +71,5 @@ class Window(tk.Tk):
         if remove_pop_up: self.destroy_pop_up()
         plt.clf()
         myGraph = graph_mapper()
-        pos = nx.spring_layout(myGraph)
+        pos = nx.spring_layout(myGraph, iterations=1000)
         nx.draw(myGraph, pos, with_labels=True)

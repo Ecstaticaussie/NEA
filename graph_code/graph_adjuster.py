@@ -5,9 +5,11 @@ import networkx as nx
 def graph_mapper():
     nodeList, edgeList = nodes_edges_generator()
     myGraph = myGraphCreate(nodeList, edgeList)
-    """
-    LOOK AT DEBUGGING THE MAPPING
-    """
-    graph_mapping = {str(nodeList[i-1]):str(i) for i in range(1, len(nodeList)+1)}
-    mappedGraph = nx.relabel_nodes(myGraph, graph_mapping)
-    return mappedGraph
+    #To create the mapping, we need to get node positions from left to right
+    node_positions = nx.spring_layout(myGraph)
+    for node in node_positions:
+        print(node, node_positions[node])
+
+    #return mappedGraph
+
+graph_mapper()
