@@ -3,7 +3,6 @@ from tkinter import ttk
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import networkx as nx
-import scipy as sp
 """
 The libraries above are explained in my analysis
 """
@@ -47,7 +46,6 @@ class Window(tk.Tk):
         self.end_algorithm.destroy()
         self.create_pop_up()
 
-    
     #Creating the pop up and placing it when it's called
     def create_pop_up(self):
         self.ask_label = ttk.Label(self, text="Would you like to generate a new graph?")
@@ -70,6 +68,5 @@ class Window(tk.Tk):
     def create_random_graph(self, remove_pop_up=True):
         if remove_pop_up: self.destroy_pop_up()
         plt.clf()
-        myGraph = graph_mapper()
-        pos = nx.spring_layout(myGraph, iterations=1000)
-        nx.draw(myGraph, pos, with_labels=True)
+        myGraph, node_positions = graph_mapper()
+        nx.draw(myGraph, node_positions, with_labels=True)

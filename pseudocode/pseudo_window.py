@@ -4,6 +4,7 @@ class Window:
 		set_title(title)
 		set_size(size)
         create_buttons()
+    end function
 		
 	function create_buttons():
         beginning_algorithm = create_button()
@@ -11,12 +12,13 @@ class Window:
         generate_graph_Button = create_button(click_command=destroy_buttons())
         next_step = create_button()
         end_algorithm = create_button()
-
+    
         beginning_algorithm.place()
         previous_step.place()
         generate_graph_Button.place()
         next_step.place()
         end_algorithm.place()
+    end function
 
     function destroy_buttons():
         beginning_algorithm.destroy()
@@ -26,6 +28,7 @@ class Window:
         end_algorithm.destroy()
 
         create_pop_up()
+    end function
 
     function remove_pop_up():
         ask_label.remove_from_window()
@@ -33,6 +36,7 @@ class Window:
         no_button.remove_from_window()
 
         create_buttons()
+    end function
 
     function create_pop_up():
         yes_button = create_button(click_command=create_random_graph())
@@ -42,10 +46,12 @@ class Window:
         ask_label.place()
         yes_button.place()
         no_button.place()
+    end function
 
     function create_random_graph():
         clear_graph()
         graph_obj = generate_graph()
         graph_position = get_graph_position()
         draw_graph(graph_obj, graph_position)
+    end function
 """
