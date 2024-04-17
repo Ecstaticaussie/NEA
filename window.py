@@ -6,7 +6,7 @@ import networkx as nx
 """
 The libraries above are explained in my analysis
 """
-from graph_code.graph_adjuster import graph_mapper
+from graph_code.graph_adjuster import graph_adjuster
 
 #Allows the graph to be updated without closing and opening any windows
 mpl.use("TkAgg")
@@ -68,5 +68,6 @@ class Window(tk.Tk):
     def create_random_graph(self, remove_pop_up=True):
         if remove_pop_up: self.destroy_pop_up()
         plt.clf()
-        myGraph, node_positions = graph_mapper()
-        nx.draw(myGraph, node_positions, with_labels=True)
+        myGraph, node_positions, edge_weights = graph_adjuster()
+        nx.draw(myGraph, with_labels=True, pos=node_positions, node_color="red")
+        nx.draw_networkx_edge_labels(myGraph, pos=node_positions, edge_labels=edge_weights, alpha=0.7)

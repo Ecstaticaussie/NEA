@@ -1,4 +1,4 @@
-from graph_code.graph_generator import nodes_edges_generator, myGraphCreate
+from graph_generator import nodes_edges_generator, myGraphCreate
 import networkx as nx
 from random import randint
 
@@ -8,16 +8,11 @@ def graph_mapper():
     nodeList, edgeList = nodes_edges_generator()
     myGraph = myGraphCreate(nodeList, edgeList)
 
-    #return myGraph                               #
+    #return myGraph, nx.spring_layout(myGraph)                               #
     #To create the mapping, we need to get node positions from left to right
     #We create a 'key-value pair' of previous node label to new node label (from ordered_nodes) in a zip object
     ordered_nodes = list(range(1, len(nodeList)+1))
     node_positions = nx.spring_layout(myGraph)
-
-    #return_node_positions is a copy of of node_positions
-    #I need the same key:value pairs as it changes with each call of nx.springlayout()
-    #copy() is not achieving the results i want to
-    return_node_positions = {key:node_positions[key] for key in node_positions} 
 
     #This will have the nodes ordered from the least to the greatest x-coordinate
     left_to_right_nodes = []
@@ -36,9 +31,38 @@ def graph_mapper():
     #Create a new graph with this mapping
     new_mapping = {left_to_right_nodes[i]: ordered_nodes[i] for i in range(len(ordered_nodes))}
     mappedGraph = nx.relabel_nodes(myGraph, new_mapping, copy=True)
+    new_node_positions = nx.spring_layout(mappedGraph)
 
-    print(new_mapping)
-    return mappedGraph, return_node_positions
+    return mappedGraph, new_node_positions
 
 def add_weights(myGraph):
-    pass
+    weighted_myGraph = nx.Graph()
+    nodes = list(myGraph.nodes)
+    edges = list(myGraph.edges)
+    #Here, I pick one of 3 ranges of random weights for the edges
+    match randint(1, 3):
+        case 1:
+            lower_bound = 1
+            upper_bound = 20
+        case 2:
+            lower_bound = 21
+            upper_bound = 99
+        case 3:
+            lower_bound = 100
+            upper_bound = 150
+
+    #Then, we randomly assign the weights to each of the edges
+    for node in nodes: weighted_myGraph.add_node(node)
+    for edge in edges:
+        weighted_myGraph.add_edge(*edge, weight=randint(lower_bound, upper_bound))
+
+    edge_weights = nx.get_edge_attributes(weighted_myGraph, "weight")
+
+    return weighted_myGraph, edge_weights
+
+
+
+def graph_adjuster():
+    myGraph, node_positions = graph_mapper()
+    weighted_myGraph, edge_weights = add_weights(myGraph)
+    return weighted_myGraph, node_positions, edge_weights

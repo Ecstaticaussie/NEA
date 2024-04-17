@@ -27,4 +27,28 @@ function graph_mapper():
 
     return mappedGraph, node_posiitons
 end function
-"""
+
+function add_weights(myGraph):
+    weighted_graph = create_blank_graph()
+    nodes = get_nodes(myGraph)
+    edges = get_edges(myGraph)
+    match random number from 1 to 3 (inclusive):
+        case 1:
+            lower_bound = 1
+            upper_bound = 20
+        case 2:
+            lower_bound = 21
+            upper_bound = 99
+        case 3:
+            lower_bound = 100
+            upper_bound = 150
+
+    end match-case
+    Add nodes to weighted_graph
+    Add weighted edges to weighted_graph with weights
+
+    get_edge_weight_labels(weighted_graph)
+
+    return edge_weigths, weighted_graph
+end function
+""" 
