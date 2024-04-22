@@ -60,9 +60,13 @@ def add_weights(myGraph):
 
     return weighted_myGraph, edge_weights
 
+def stringify_nodes(myGraph):
+    num_of_nodes = myGraph.number_of_nodes()
+    int_to_str = {i:str(i) for i in range(1, num_of_nodes+1)}
+    return nx.relabel_nodes(myGraph, int_to_str, copy=True)
 
-
-def graph_adjuster():
+def graph_adjuster(make_str=False):
     myGraph, node_positions = graph_mapper()
     weighted_myGraph, edge_weights = add_weights(myGraph)
+    if make_str: weighted_myGraph = stringify_nodes(weighted_myGraph)
     return weighted_myGraph, node_positions, edge_weights
