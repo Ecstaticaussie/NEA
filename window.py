@@ -64,10 +64,19 @@ class Window(tk.Tk):
         self.no_button.destroy()
         self.create_buttons()
 
+    def shift_node_vertex_boxes(self, pos):
+        pos_label = {}
+        for x in pos:
+            pos_label[x] = [pos[x][0]+0.01, pos[x][1]+0.01]
+        return pos_label
+
     #Draws a graph in a seperate window
     def create_random_graph(self, remove_pop_up=True):
         if remove_pop_up: self.destroy_pop_up()
         plt.clf()
-        myGraph, node_positions, edge_weights = graph_adjuster()
-        nx.draw(myGraph, with_labels=True, pos=node_positions, node_color="red")
-        nx.draw_networkx_edge_labels(myGraph, pos=node_positions, edge_labels=edge_weights, alpha=0.7)
+        self.myGraph, node_positions, edge_weights = graph_adjuster()
+        node_attributes_pos = self.shift_node_vertex_boxes(node_positions)
+        vertex_boxes = {node: (int(data["node_label"]), data["order_of_labelling"], data["final_label"], data["working_values"]) for node, data in self.myGraph.nodes(data=True)}
+        nx.draw(self.myGraph, pos=node_positions, node_color="black", node_size=30, alpha=0.9)
+        nx.draw_networkx_edge_labels(self.myGraph, pos=node_positions, edge_labels=edge_weights, alpha=0.7)
+        nx.draw_networkx_labels(self.myGraph, pos=node_attributes_pos, labels=vertex_boxes, font_size=12, horizontalalignment="left", verticalalignment="bottom", font_weight=100)

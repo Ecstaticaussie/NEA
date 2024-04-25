@@ -106,7 +106,7 @@ class DijkstraAlgo:
             self.all_nodes_visited[str(node)] = True
 
         self.scores[self.start_node] = 0
-        self.is_node_visited[self.start_node] = None
+        self.previous_node[self.start_node] = None
         self.current_node = self.start_node
         self.current_node_connections = self.get_node_connections(self.current_node)
         #We sort each edge so that it can be used for as a key for a dictionary
@@ -142,11 +142,6 @@ class DijkstraAlgo:
                 self.previous_node[node] = self.current_node
 
     def update_q(self):
-        #Remove visited nodes
-        for item in self.unvisited_nodes_q:
-            if self.is_node_visited[item.label] == True:
-                self.unvisited_nodes_q.pop(item.label)
-
         # Add + update nodes with a lower score
         for node in self.current_node_neighbours:
             if self.is_node_visited[node] == False:
@@ -157,6 +152,11 @@ class DijkstraAlgo:
                 #If the new score is less than the one in unvisited_node_q, change it
                 elif self.unvisited_nodes_q.get_item_value(node) > node_score:
                     self.unvisited_nodes_q.set_item_value(node, node_score)
+
+        #Remove visited nodes
+        for item in self.unvisited_nodes_q:
+            if self.is_node_visited[item.label] == True:
+                self.unvisited_nodes_q.pop(item.label)
     
     def change_current_node(self):
         self.is_node_visited[self.current_node] = True
@@ -172,11 +172,7 @@ class DijkstraAlgo:
         print(self.scores)
         print(self.previous_node)
 
-    def test(self):
-        while not self.are_all_nodes_visited():
-            self.update_lists()
-            self.update_q()
-            self.change_current_node()
+    def test(self): pass
 
 myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects
 myDijkstra = DijkstraAlgo(myGraph, "1")

@@ -60,13 +60,25 @@ def add_weights(myGraph):
 
     return weighted_myGraph, edge_weights
 
+#To make the nodes strings instead of integers
 def stringify_nodes(myGraph):
     num_of_nodes = myGraph.number_of_nodes()
     int_to_str = {i:str(i) for i in range(1, num_of_nodes+1)}
     return nx.relabel_nodes(myGraph, int_to_str, copy=True)
 
-def graph_adjuster(make_str=False):
+#Creation of vertex boxes as node attributes (keys in a dictionary)
+def add_empty_vertex_boxes(myGraph):
+    attributed_graph = nx.Graph()
+    for node in myGraph.nodes():
+        attributed_graph.add_node(node, node_label=str(node), order_of_labelling=0, final_label=0, working_values=[])
+
+    attributed_graph.add_edges_from(myGraph.edges())
+    return attributed_graph
+
+#Takes a mapped graph and adjusts it
+def graph_adjuster(make_str_nodes=False):
     myGraph, node_positions = graph_mapper()
     weighted_myGraph, edge_weights = add_weights(myGraph)
-    if make_str: weighted_myGraph = stringify_nodes(weighted_myGraph)
+    if make_str_nodes: weighted_myGraph = stringify_nodes(weighted_myGraph)
+    weighted_myGraph = add_empty_vertex_boxes(weighted_myGraph)
     return weighted_myGraph, node_positions, edge_weights

@@ -10,5 +10,6 @@ function dijkstra_algorithm(myGraph, start_node):
         append score to score list
         append current node to previous node list for node being explored
     mark current node as visited
+    
 end function
 """
