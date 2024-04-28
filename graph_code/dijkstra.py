@@ -95,6 +95,7 @@ class DijkstraAlgo:
         self.scores = {}
         self.all_nodes_visited = {}
         self.unvisited_nodes_q = PriorityQ()
+        self.unvisited_nodes_q.push(start_node, 0)
 
         self.further_set_up()
 
@@ -172,8 +173,10 @@ class DijkstraAlgo:
         print(self.scores)
         print(self.previous_node)
 
-    def test(self): pass
+    def test(self):
+        while len(self.unvisited_nodes_q) == 0:
+            pass
 
 myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects
 myDijkstra = DijkstraAlgo(myGraph, "1")
-myDijkstra.execute()
+myDijkstra.test()
