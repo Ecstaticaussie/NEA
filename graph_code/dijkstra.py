@@ -32,6 +32,9 @@ class PriorityQ:
     def __iter__(self):
         for item in self.queue:
             yield item
+
+    def __len__(self):
+        return len(self.queue)
     
     #Going through the queue and inserting item_to_queue when it's value is more than an item in the queue at a certein index
     def push(self, label, value):
@@ -54,7 +57,7 @@ class PriorityQ:
                     self.queue.remove(item)
 
         if len(self.queue) > 0:
-            return self.queue.pop().label
+            return self.queue.pop()
 
     def find_label(self, label):
         for item in self.queue:
@@ -88,8 +91,6 @@ class DijkstraAlgo:
     #setting up variables and data structures
     def __init__(self, myGraph, start_node="1"):
         self.myGraph = myGraph
-        self.start_node = start_node
-
         self.previous_node = {}
         self.is_node_visited = {}
         self.scores = {}
@@ -108,10 +109,6 @@ class DijkstraAlgo:
 
         self.scores[self.start_node] = 0
         self.previous_node[self.start_node] = None
-        self.current_node = self.start_node
-        self.current_node_connections = self.get_node_connections(self.current_node)
-        #We sort each edge so that it can be used for as a key for a dictionary
-        self.current_node_connections = [tuple(sorted(edge)) for edge in self.current_node_connections]
 
     #Used as the condition for the while loop in self.execute()
     def are_all_nodes_visited(self):
@@ -119,7 +116,9 @@ class DijkstraAlgo:
         return False
 
     def get_node_connections(self, node):
-        return [edge for edge in list(self.myGraph.edges) if node in edge]
+        x = [edge for edge in list(self.myGraph.edges) if node in edge]
+        #We sort each edge so that it can be used for as a key for a dictionary
+        return [tuple(sorted(edge)) for edge in x]
 
     def update_lists(self):
         self.current_node_neighbours = nx.all_neighbors(self.myGraph, self.current_node)
@@ -163,6 +162,8 @@ class DijkstraAlgo:
         self.is_node_visited[self.current_node] = True
         self.current_node = self.unvisited_nodes_q.pop()
 
+
+    #Where the actual execution occurs
     def execute(self):
         while not self.are_all_nodes_visited():
             self.update_lists()
@@ -174,8 +175,19 @@ class DijkstraAlgo:
         print(self.previous_node)
 
     def test(self):
-        while len(self.unvisited_nodes_q) == 0:
-            pass
+        while len(self.unvisited_nodes_q) != 0:
+            node_and_distance = self.unvisited_nodes_q.pop()
+            self.current_node = node_and_distance.label
+            distance = node_and_distance.value
+            self.is_node_visited[self.current_node] = True
+            self.current_node_connections = self.get_node_connections(self.current_node)
+            self.current_node_neighbours = nx.all_neighbors(self.myGraph, self.current_node)
+            for current_edge in self.current_node_connections:
+                connected_node = current_edge[0] if current_edge[0] != self.current_node else current_edge[1]
+                if self.is_node_visited[connected_node]:
+                    continue
+                edge_weight = nx.get_edge_attributes(self.myGraph, "weight")[current_edge]
+                new_distance = distance + edge_weight
 
 myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects
 myDijkstra = DijkstraAlgo(myGraph, "1")
