@@ -95,20 +95,18 @@ class DijkstraAlgo:
         self.is_node_visited = {}
         self.scores = {}
         self.all_nodes_visited = {}
+
         self.unvisited_nodes_q = PriorityQ()
         self.unvisited_nodes_q.push(start_node, 0)
 
-        self.further_set_up()
-
-    def further_set_up(self):
         for node in sorted(self.myGraph.nodes):
             self.previous_node[str(node)] = None
             self.is_node_visited[str(node)] = False
             self.scores[str(node)] = float("inf")
             self.all_nodes_visited[str(node)] = True
 
-        self.scores[self.start_node] = 0
-        self.previous_node[self.start_node] = None
+        self.scores[start_node] = 0
+        self.previous_node[start_node] = None
 
     #Used as the condition for the while loop in self.execute()
     def are_all_nodes_visited(self):
@@ -162,7 +160,6 @@ class DijkstraAlgo:
         self.is_node_visited[self.current_node] = True
         self.current_node = self.unvisited_nodes_q.pop()
 
-
     #Where the actual execution occurs
     def execute(self):
         while not self.are_all_nodes_visited():
@@ -170,25 +167,32 @@ class DijkstraAlgo:
             self.update_q()
             self.change_current_node()
 
-        print(self.is_node_visited)
-        print(self.scores)
-        print(self.previous_node)
-
     def test(self):
         while len(self.unvisited_nodes_q) != 0:
             node_and_distance = self.unvisited_nodes_q.pop()
-            self.current_node = node_and_distance.label
-            distance = node_and_distance.value
-            self.is_node_visited[self.current_node] = True
-            self.current_node_connections = self.get_node_connections(self.current_node)
-            self.current_node_neighbours = nx.all_neighbors(self.myGraph, self.current_node)
-            for current_edge in self.current_node_connections:
-                connected_node = current_edge[0] if current_edge[0] != self.current_node else current_edge[1]
+            current_node = node_and_distance.label
+            score = node_and_distance.value
+            self.is_node_visited[current_node] = True
+            current_node_connections = self.get_node_connections(current_node)
+            for current_edge in current_node_connections:
+                connected_node = current_edge[0] if current_edge[0] != current_node else current_edge[1]
                 if self.is_node_visited[connected_node]:
                     continue
-                edge_weight = nx.get_edge_attributes(self.myGraph, "weight")[current_edge]
-                new_distance = distance + edge_weight
 
-myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects
+                #We have this try and except as the edges are represented by nodes which are ordered by their direction when created
+                #They don't have a direction, but you can't access edges unless you have the nodes ordered correctly
+                try:
+                    current_edge_weight = nx.get_edge_attributes(self.myGraph, "weight")[current_edge]
+                except KeyError:
+                    reversed_edge = (current_edge[1], current_edge[0])
+                    current_edge_weight = nx.get_edge_attributes(self.myGraph, "weight")[reversed_edge]
+
+                new_score = score + current_edge_weight
+                if new_score < self.scores[connected_node]:
+                    self.scores[connected_node] = new_score
+                    self.previous_node[connected_node] = current_node
+                    self.unvisited_nodes_q.push(connected_node, new_score)
+
+myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
 myDijkstra = DijkstraAlgo(myGraph, "1")
 myDijkstra.test()
