@@ -7,7 +7,11 @@ This will information about the graph at the step's execution in the algorithm
 """
 class DijkStep:
     def __init__(self, id):
-        self.id = id
+        self.colour = None
+        self.edges_visited = []
+
+        #To store working values of nodes
+        self.nodes_visited = {}
 
 """
 This will represent the shortest distance for one node in the graph
@@ -108,67 +112,18 @@ class DijkstraAlgo:
         self.scores[start_node] = 0
         self.previous_node[start_node] = None
 
-    #Used as the condition for the while loop in self.execute()
-    def are_all_nodes_visited(self):
-        if self.all_nodes_visited == self.is_node_visited: return True
-        return False
+        self.steps = []
 
     def get_node_connections(self, node):
         x = [edge for edge in list(self.myGraph.edges) if node in edge]
         #We sort each edge so that it can be used for as a key for a dictionary
         return [tuple(sorted(edge)) for edge in x]
 
-    def update_lists(self):
-        self.current_node_neighbours = nx.all_neighbors(self.myGraph, self.current_node)
-        for edge in self.current_node_connections:
-            #This is to decide what current_node is connected to
-            node = edge[0] if edge[0] != self.current_node else edge[1]
-
-            #We have this try and except as the edges are represented by nodes which are ordered by their direction when created
-            #They don't have a direction, but you can't access edges unless you have the nodes ordered correctly
-            try:
-                current_edge_weight = nx.get_edge_attributes(self.myGraph, "weight")[edge]
-            except KeyError:
-                reversed_edge = (edge[1], edge[0])
-                current_edge_weight = nx.get_edge_attributes(self.myGraph, "weight")[reversed_edge]
-
-            current_score = current_edge_weight + self.scores[self.current_node]
-
-            #Updating the score
-            if current_score > self.scores[node] or self.scores[node] == float("inf"):
-                self.scores[node] = current_score
-                self.previous_node[node] = self.current_node
-
-    def update_q(self):
-        # Add + update nodes with a lower score
-        for node in self.current_node_neighbours:
-            if self.is_node_visited[node] == False:
-                node_score = self.scores[node]
-                if self.unvisited_nodes_q.find_label(node) == False:
-                    self.unvisited_nodes_q.push(node, node_score)
-                
-                #If the new score is less than the one in unvisited_node_q, change it
-                elif self.unvisited_nodes_q.get_item_value(node) > node_score:
-                    self.unvisited_nodes_q.set_item_value(node, node_score)
-
-        #Remove visited nodes
-        for item in self.unvisited_nodes_q:
-            if self.is_node_visited[item.label] == True:
-                self.unvisited_nodes_q.pop(item.label)
-    
-    def change_current_node(self):
-        self.is_node_visited[self.current_node] = True
-        self.current_node = self.unvisited_nodes_q.pop()
-
-    #Where the actual execution occurs
     def execute(self):
-        while not self.are_all_nodes_visited():
-            self.update_lists()
-            self.update_q()
-            self.change_current_node()
-
-    def test(self):
         while len(self.unvisited_nodes_q) != 0:
+            #Where graph changes are stored for each step
+            current_DijkStep = DijkStep()
+
             node_and_distance = self.unvisited_nodes_q.pop()
             current_node = node_and_distance.label
             score = node_and_distance.value
@@ -193,6 +148,15 @@ class DijkstraAlgo:
                     self.previous_node[connected_node] = current_node
                     self.unvisited_nodes_q.push(connected_node, new_score)
 
+    def show_algorithm_end(self):
+        print("Scores: ", self.scores)
+        print("Previous Nodes: ", self.previous_node)
+        print("Nodes Visited: ", self.is_node_visited)
+
+        for step in self.steps:
+            print(step)
+
 myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
 myDijkstra = DijkstraAlgo(myGraph, "1")
-myDijkstra.test()
+myDijkstra.execute()
+myDijkstra.show_algorithm_end()
