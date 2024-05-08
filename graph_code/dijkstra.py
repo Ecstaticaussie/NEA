@@ -1,5 +1,6 @@
 import networkx as nx
 from graph_adjuster import graph_adjuster
+from copy import deepcopy
 
 """
 This will store info about each step in Dijkstra's
@@ -126,30 +127,39 @@ class DijkstraAlgo:
         self.scores[start_node] = 0
         self.previous_node[start_node] = None
 
-        self.steps = []
+        #The first item of this array represents the graph before Dijkstra's algorithm starts executing
+        self.steps = [{node: [int(data["node_label"]), data["order_of_labelling"], data["final_label"], data["working_values"]] for node, data in self.myGraph.nodes(data=True)}]
+
+    def previous_step_vertex_boxes(self):
+        previous_step = deepcopy(self.steps[-1])
+        return previous_step
 
     def get_node_connections(self, node):
         x = [edge for edge in list(self.myGraph.edges) if node in edge]
         #We sort each edge so that it can be used for as a key for a dictionary
         return [tuple(sorted(edge)) for edge in x]
 
+    def dijk_step(self, step_counter):
+        return self.steps[step_counter]
+
     def execute(self):
+        step_counter = 1
         while len(self.unvisited_nodes_q) != 0:
             #Where graph changes are stored for each step
-            current_DijkStep = DijkStep()
+            vertex_boxes = self.previous_step_vertex_boxes()
 
             node_and_distance = self.unvisited_nodes_q.pop()
             current_node = node_and_distance.label
-            current_DijkStep.store_visited_node(current_node)
+            vertex_boxes[current_node][1] = step_counter
 
             score = node_and_distance.value
             self.is_node_visited[current_node] = True
             current_node_connections = self.get_node_connections(current_node)
+            vertex_boxes[current_node][2] = score
 
             for current_edge in current_node_connections:
                 if current_edge not in self.visited_edges:
                     self.visited_edges.append(current_edge)
-                    current_DijkStep.store_edge(current_edge)
                     connected_node = current_edge[0] if current_edge[0] != current_node else current_edge[1]
                     if self.is_node_visited[connected_node]:
                         continue
@@ -164,12 +174,13 @@ class DijkstraAlgo:
 
                     new_score = score + current_edge_weight
                     if new_score < self.scores[connected_node]:
-                        current_DijkStep.store_working_value(connected_node, new_score)
+                        vertex_boxes[connected_node][3].append(new_score) #*****THIS LINE FOR UPDATING WORKING VALUES NEEDS TO BE REVISITED
                         self.scores[connected_node] = new_score
                         self.previous_node[connected_node] = current_node
                         self.unvisited_nodes_q.push(connected_node, new_score)
-
-            self.steps.append(current_DijkStep)
+                
+            step_counter += 1
+            self.steps.append(vertex_boxes)
 
     def show_algorithm_end(self):
         print("Scores: ", self.scores)
@@ -178,11 +189,11 @@ class DijkstraAlgo:
 
         for step in self.steps:
             print("\n")
-            print("Visited node:", step.visited_node)
-            print("Visited edges:",step.edges)
-            print("Scores:", step.nodes_and_working_values)
+            print(step)
 
-myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
-myDijkstra = DijkstraAlgo(myGraph, "1")
-myDijkstra.execute()
-myDijkstra.show_algorithm_end()
+
+if __name__ == "__main__":
+    myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
+    myDijkstra = DijkstraAlgo(myGraph, "1")
+    myDijkstra.execute()
+    myDijkstra.show_algorithm_end()

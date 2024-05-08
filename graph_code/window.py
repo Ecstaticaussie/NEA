@@ -6,7 +6,8 @@ import networkx as nx
 """
 The libraries above are explained in my analysis
 """
-from graph_code.graph_adjuster import graph_adjuster
+from graph_adjuster import graph_adjuster
+from dijkstra import DijkstraAlgo
 
 #Allows the graph to be updated without closing and opening any windows
 mpl.use("TkAgg")
@@ -18,6 +19,7 @@ class Window(tk.Tk):
         super().__init__()
         self.title(title)
         self.geometry(f"{size[0]}x{size[1]}")
+        self.step_counter = 0
         self.create_buttons()
         self.create_random_graph(remove_pop_up=False)
         self.mainloop()
@@ -37,6 +39,9 @@ class Window(tk.Tk):
         self.next_step.grid(row=0, column=3)
         self.end_algorithm.grid(row=0, column=4)
 
+        self.test = ttk.Label(self, text=str(self.step_counter))
+        self.test.grid(row=1, column=0)
+
     #Replaces the buttons with the pop up
     def destroy_buttons(self):
         self.beginning_algorithm.destroy()
@@ -55,9 +60,12 @@ class Window(tk.Tk):
         self.yes_button.grid(row=1, column=0)
         self.no_button.grid(row=1, column=1)
 
-    #Destroys the pop up in the main window and replaces it with the other buttons
-    #This is done instead of just removing the pop up from the main window as I don't need another method
-    #to just add the pop up back to the main window
+    """
+    Destroys the pop up in the main window and replaces it with the other buttons
+
+    This is done instead of just removing the pop up from the main window
+    as I don't need another method to just add the pop up back to the main window
+    """
     def destroy_pop_up(self):
         self.ask_label.destroy()
         self.yes_button.destroy()
@@ -70,13 +78,28 @@ class Window(tk.Tk):
             pos_label[x] = [pos[x][0]+0.01, pos[x][1]+0.01]
         return pos_label
 
+    def run_dijkstra(self):
+        self.myDijkstra = DijkstraAlgo(self.myGraph)
+        self.myDijkstra.exectute()
+
+    def next_vertex_boxes(self):
+        return self.myDijkstra.dijk_step(self.step_counter)
+
+    def new_step_counter(self, num):
+        self.step_counter = num
+
     #Draws a graph in a seperate window
-    def create_random_graph(self, remove_pop_up=True):
+    def create_random_graph(self,remove_pop_up=True):
+        #if self.step_counter == 0: self.run_dijkstra()
+
         if remove_pop_up: self.destroy_pop_up()
         plt.clf()
+
         self.myGraph, node_positions, edge_weights = graph_adjuster()
         node_attributes_pos = self.shift_node_vertex_boxes(node_positions)
-        vertex_boxes = {node: (int(data["node_label"]), data["order_of_labelling"], data["final_label"], data["working_values"]) for node, data in self.myGraph.nodes(data=True)}
+
+        #current_vertex_boxes = self.next_vertex_boxes()
+        
         nx.draw(self.myGraph, pos=node_positions, node_color="black", node_size=30, alpha=0.9)
         nx.draw_networkx_edge_labels(self.myGraph, pos=node_positions, edge_labels=edge_weights, alpha=0.7)
-        nx.draw_networkx_labels(self.myGraph, pos=node_attributes_pos, labels=vertex_boxes, font_size=12, horizontalalignment="left", verticalalignment="bottom", font_weight=100)
+        #nx.draw_networkx_labels(self.myGraph, pos=node_attributes_pos, labels=current_vertex_boxes, font_size=12, horizontalalignment="left", verticalalignment="bottom", font_weight=100)
