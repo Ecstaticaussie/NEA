@@ -20,9 +20,8 @@ class Window(tk.Tk):
         self.title(title)
         self.geometry(f"{size[0]}x{size[1]}")
         self.step_counter = 0
-        self.create_buttons()
         self.create_random_graph()
-        self.display_graph(remove_pop_up=False)
+        self.create_buttons()
         self.mainloop()
 
     def create_buttons(self):
@@ -31,7 +30,7 @@ class Window(tk.Tk):
         self.previous_step = ttk.Button(self, text="<", command=lambda:self.new_step_counter(self.step_counter-1))
         self.generate_graph_Button = ttk.Button(self, text="Generate", command=self.destroy_buttons)
         self.next_step = ttk.Button(self, text=">", command=lambda:self.new_step_counter(self.step_counter+1))
-        self.end_algorithm = ttk.Button(self, text=">>", command=lambda:self.new_step_counter(0))
+        self.end_algorithm = ttk.Button(self, text=">>", command=lambda:self.new_step_counter(self))
 
         #Placing buttons
         self.beginning_algorithm.grid(row=0, column=0)
@@ -81,16 +80,17 @@ class Window(tk.Tk):
 
     def new_step_counter(self, num):
         self.step_counter = num
+        self.display_graph(remove_pop_up=False)
 
     #Creates a random graph and execute + stores the steps of Dijkstra's
     def create_random_graph(self):
-        self.myGraph, self.node_positions, self.edge_weights = graph_adjuster()
+        self.myGraph, self.node_positions, self.edge_weights = graph_adjuster(make_str_nodes=True)
         self.node_attributes_pos = self.shift_node_vertex_boxes(self.node_positions)
         self.myDijkstra = DijkstraAlgo(self.myGraph)
-        self.myDijkstra.exectute()
+        self.myDijkstra.execute()
 
         self.new_step_counter(0)
-        self.display_graph()
+        self.display_graph(remove_pop_up=False)
 
     #Draws a graph in a seperate window
     def display_graph(self,remove_pop_up=True):

@@ -106,7 +106,7 @@ Decide current node
 """
 class DijkstraAlgo:
     #setting up variables and data structures
-    def __init__(self, myGraph, start_node="1"):
+    def __init__(self, myGraph, start_node=1):
         self.myGraph = myGraph
         self.previous_node = {}
         self.is_node_visited = {}
@@ -191,9 +191,8 @@ class DijkstraAlgo:
             print("\n")
             print(step)
 
-
 if __name__ == "__main__":
-    myGraph = graph_adjuster(True)[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
+    myGraph = graph_adjuster()[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
     myDijkstra = DijkstraAlgo(myGraph, "1")
     myDijkstra.execute()
     myDijkstra.show_algorithm_end()
