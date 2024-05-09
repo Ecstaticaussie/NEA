@@ -58,7 +58,7 @@ class Window(tk.Tk):
 
         elif self.step_counter == self.num_of_nodes:
             self.next_step["state"] = "disable"
-            self.end_algorithm["state"] = "disable"
+            self.end_algorithm["state"] = "disbaled"
 
     #Replaces the buttons with the pop up
     def destroy_buttons(self):
@@ -104,9 +104,7 @@ class Window(tk.Tk):
         self.display_graph(remove_pop_up=False)
 
     #Creates a random graph and execute + stores the steps of Dijkstra's
-    def create_random_graph(self, remove_pop_up=False):
-        if remove_pop_up: self.destroy_pop_up()
-        plt.clf()
+    def create_random_graph(self):
         self.myGraph, self.node_positions, self.edge_weights = graph_adjuster()
         self.node_attributes_pos = self.shift_node_vertex_boxes(self.node_positions)
         self.myDijkstra = DijkstraAlgo(self.myGraph)
@@ -116,7 +114,10 @@ class Window(tk.Tk):
         self.display_graph(remove_pop_up=False)
 
     #Draws a graph in a seperate window
-    def display_graph(self):
+    def display_graph(self,remove_pop_up=True):
+        if remove_pop_up: self.destroy_pop_up()
+        plt.clf()
+
         current_vertex_boxes = self.next_vertex_boxes()
 
         nx.draw(self.myGraph, pos=self.node_positions, node_color="black", node_size=30, alpha=0.9)
