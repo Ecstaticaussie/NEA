@@ -26,11 +26,12 @@ class Window(tk.Tk):
 
     def create_buttons(self):
         #Creating buttons
+        self.num_of_nodes = self.myGraph.number_of_nodes()
         self.beginning_algorithm = ttk.Button(self, text="<<", command=lambda:self.new_step_counter(0))
         self.previous_step = ttk.Button(self, text="<", command=lambda:self.new_step_counter(self.step_counter-1))
         self.generate_graph_Button = ttk.Button(self, text="Generate", command=self.destroy_buttons)
         self.next_step = ttk.Button(self, text=">", command=lambda:self.new_step_counter(self.step_counter+1))
-        self.end_algorithm = ttk.Button(self, text=">>", command=lambda:self.new_step_counter(self))
+        self.end_algorithm = ttk.Button(self, text=">>", command=lambda:self.new_step_counter(self.num_of_nodes))
 
         #Placing buttons
         self.beginning_algorithm.grid(row=0, column=0)
@@ -38,6 +39,26 @@ class Window(tk.Tk):
         self.generate_graph_Button.grid(row=0, column=2)
         self.next_step.grid(row=0, column=3)
         self.end_algorithm.grid(row=0, column=4)
+
+    #Used in self.disable_buttons()
+    def enable_all_buttons(self):
+        self.beginning_algorithm["state"] = "active"
+        self.previous_step["state"] = "active"
+        self.next_step["state"] = "active"
+        self.end_algorithm["state"] = "active"
+
+    #We first enable all buttons
+    #We can then easily disable the buttons that the user shouldn't use
+    #This is because we would otherwise have to check using selection when to enable the disabled buttons again.
+    def disable_buttons(self):
+        self.enable_all_buttons()
+        if self.step_counter == 0:
+            self.beginning_algorithm["state"] = "disable"
+            self.previous_step["state"] = "disable"
+
+        elif self.step_counter == self.num_of_nodes:
+            self.next_step["state"] = "disable"
+            self.end_algorithm["state"] = "disable"
 
     #Replaces the buttons with the pop up
     def destroy_buttons(self):
@@ -83,8 +104,10 @@ class Window(tk.Tk):
         self.display_graph(remove_pop_up=False)
 
     #Creates a random graph and execute + stores the steps of Dijkstra's
-    def create_random_graph(self):
-        self.myGraph, self.node_positions, self.edge_weights = graph_adjuster(make_str_nodes=True)
+    def create_random_graph(self, remove_pop_up=False):
+        if remove_pop_up: self.destroy_pop_up()
+        plt.clf()
+        self.myGraph, self.node_positions, self.edge_weights = graph_adjuster()
         self.node_attributes_pos = self.shift_node_vertex_boxes(self.node_positions)
         self.myDijkstra = DijkstraAlgo(self.myGraph)
         self.myDijkstra.execute()
@@ -93,10 +116,7 @@ class Window(tk.Tk):
         self.display_graph(remove_pop_up=False)
 
     #Draws a graph in a seperate window
-    def display_graph(self,remove_pop_up=True):
-        if remove_pop_up: self.destroy_pop_up()
-        plt.clf()
-
+    def display_graph(self):
         current_vertex_boxes = self.next_vertex_boxes()
 
         nx.draw(self.myGraph, pos=self.node_positions, node_color="black", node_size=30, alpha=0.9)

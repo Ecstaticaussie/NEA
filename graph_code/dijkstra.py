@@ -119,10 +119,10 @@ class DijkstraAlgo:
         self.visited_edges = []
 
         for node in sorted(self.myGraph.nodes):
-            self.previous_node[str(node)] = None
-            self.is_node_visited[str(node)] = False
-            self.scores[str(node)] = float("inf")
-            self.all_nodes_visited[str(node)] = True
+            self.previous_node[node] = None
+            self.is_node_visited[node] = False
+            self.scores[node] = float("inf")
+            self.all_nodes_visited[node] = True
 
         self.scores[start_node] = 0
         self.previous_node[start_node] = None
@@ -174,7 +174,7 @@ class DijkstraAlgo:
 
                     new_score = score + current_edge_weight
                     if new_score < self.scores[connected_node]:
-                        vertex_boxes[connected_node][3].append(new_score) #*****THIS LINE FOR UPDATING WORKING VALUES NEEDS TO BE REVISITED
+                        vertex_boxes[connected_node][3].append(new_score) ###### UPDATING WORKING VALUES NEEDS TO BE REVISITED #####
                         self.scores[connected_node] = new_score
                         self.previous_node[connected_node] = current_node
                         self.unvisited_nodes_q.push(connected_node, new_score)
@@ -193,6 +193,6 @@ class DijkstraAlgo:
 
 if __name__ == "__main__":
     myGraph = graph_adjuster()[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
-    myDijkstra = DijkstraAlgo(myGraph, "1")
+    myDijkstra = DijkstraAlgo(myGraph, 1)
     myDijkstra.execute()
     myDijkstra.show_algorithm_end()
