@@ -69,10 +69,10 @@ class Window(tk.Tk):
         self.end_algorithm.destroy()
         self.create_pop_up()
 
-    #Creating the pop up and placing it when it's called
+    #Creating the pop up and placing it
     def create_pop_up(self):
         self.ask_label = ttk.Label(self, text="Would you like to generate a new graph?")
-        self.yes_button = ttk.Button(self, text="Yes", command=self.create_random_graph)
+        self.yes_button = ttk.Button(self, text="Yes", command=lambda: self.destroy_pop_up(create_graph=True))
         self.no_button = ttk.Button(self, text="No", command=self.destroy_pop_up)
         self.ask_label.grid(row=0, column=0, padx=100, columnspan=2)
         self.yes_button.grid(row=1, column=0)
@@ -84,10 +84,11 @@ class Window(tk.Tk):
     This is done instead of just removing the pop up from the main window
     as I don't need another method to just add the pop up back to the main window
     """
-    def destroy_pop_up(self):
+    def destroy_pop_up(self, create_graph=False):
         self.ask_label.destroy()
         self.yes_button.destroy()
         self.no_button.destroy()
+        if create_graph: self.create_random_graph()
         self.create_buttons()
 
     def shift_node_vertex_boxes(self, pos):
@@ -101,7 +102,8 @@ class Window(tk.Tk):
 
     def new_step_counter(self, num):
         self.step_counter = num
-        self.display_graph(remove_pop_up=False)
+        self.disable_buttons()
+        self.display_graph()
 
     #Creates a random graph and execute + stores the steps of Dijkstra's
     def create_random_graph(self):
@@ -110,16 +112,15 @@ class Window(tk.Tk):
         self.myDijkstra = DijkstraAlgo(self.myGraph)
         self.myDijkstra.execute()
 
-        self.new_step_counter(0)
+        self.step_counter = 0
         self.display_graph(remove_pop_up=False)
 
     #Draws a graph in a seperate window
-    def display_graph(self,remove_pop_up=True):
+    def display_graph(self,remove_pop_up=False):
         if remove_pop_up: self.destroy_pop_up()
         plt.clf()
 
         current_vertex_boxes = self.next_vertex_boxes()
-
         nx.draw(self.myGraph, pos=self.node_positions, node_color="black", node_size=30, alpha=0.9)
         nx.draw_networkx_edge_labels(self.myGraph, pos=self.node_positions, edge_labels=self.edge_weights, alpha=0.7)
         nx.draw_networkx_labels(self.myGraph, pos=self.node_attributes_pos, labels=current_vertex_boxes, font_size=12, horizontalalignment="left", verticalalignment="bottom", font_weight=100)
