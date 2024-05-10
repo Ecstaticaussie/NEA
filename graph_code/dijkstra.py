@@ -192,6 +192,7 @@ class DijkstraAlgo:
             print("\n")
             print(step)
 
+#used for testing if the classes work
 if __name__ == "__main__":
     myGraph = graph_adjuster()[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
     myDijkstra = DijkstraAlgo(myGraph, 1)
