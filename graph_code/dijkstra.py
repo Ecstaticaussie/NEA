@@ -182,6 +182,7 @@ class DijkstraAlgo:
             step_counter += 1
             self.steps.append(vertex_boxes)
 
+    #for testing that the outputs of the algorithm make sense
     def show_algorithm_end(self):
         print("Scores: ", self.scores)
         print("Previous Nodes: ", self.previous_node)
