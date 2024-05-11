@@ -78,7 +78,6 @@ class Window(tk.Tk):
 
     """
     Destroys the pop up in the main window and replaces it with the other buttons
-
     This is done instead of just removing the pop up from the main window
     as I don't need another method to just add the pop up back to the main window
     """

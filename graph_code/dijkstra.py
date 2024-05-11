@@ -182,6 +182,7 @@ class DijkstraAlgo:
             step_counter += 1
             self.steps.append(vertex_boxes)
 
+    #For testing the variables and data structures of the algorithm
     def show_algorithm_end(self):
         print("Scores: ", self.scores)
         print("Previous Nodes: ", self.previous_node)
@@ -190,9 +191,3 @@ class DijkstraAlgo:
         for step in self.steps:
             print("\n")
             print(step)
-
-if __name__ == "__main__":
-    myGraph = graph_adjuster()[0] #Using only the graph (seen with [0]) as graph_adjuster() returns a tuple of different objects)
-    myDijkstra = DijkstraAlgo(myGraph, 1)
-    myDijkstra.execute()
-    myDijkstra.show_algorithm_end()
