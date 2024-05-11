@@ -3,9 +3,7 @@ from tkinter import ttk
 import matplotlib.pyplot as plt
 import matplotlib as mpl
 import networkx as nx
-"""
-The libraries above are explained in my analysis
-"""
+
 from graph_adjuster import graph_adjuster
 from dijkstra import DijkstraAlgo
 
@@ -58,7 +56,7 @@ class Window(tk.Tk):
 
         elif self.step_counter == self.num_of_nodes:
             self.next_step["state"] = "disable"
-            self.end_algorithm["state"] = "disbaled"
+            self.end_algorithm["state"] = "disbale"
 
     #Replaces the buttons with the pop up
     def destroy_buttons(self):
