@@ -98,7 +98,7 @@ class Window(tk.Tk):
         return self.myDijkstra.dijk_step(self.step_counter)
 
     def new_step_counter(self, num):
-        self.step_counter = num
+        self.step_counter = num if num > 0 else 0
         self.disable_buttons()
         self.display_graph()
 

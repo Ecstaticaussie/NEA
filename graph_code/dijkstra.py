@@ -113,7 +113,7 @@ class DijkstraAlgo:
         self.all_nodes_visited = {}
 
         self.unvisited_nodes_q = PriorityQ()
-        self.unvisited_nodes_q.push(start_node, 0)
+        self.unvisited_nodes_q.enqueue(start_node, 0)
 
         self.visited_edges = []
 
@@ -190,3 +190,8 @@ class DijkstraAlgo:
         for step in self.steps:
             print("\n")
             print(step)
+
+g = graph_adjuster()[0]
+algo = DijkstraAlgo(g)
+algo.execute()
+algo.show_algorithm_end()
