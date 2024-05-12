@@ -51,4 +51,27 @@ function add_weights(myGraph):
 
     return edge_weigths, weighted_graph
 end function
+
+fucntion stringify_nodes(myGraph):
+    create an empty graph
+    for every node in myGraph:
+        cast the node from integer to string
+        add this node to the empty graph
+    
+    for every edge in myGraph:
+        add edge to new graph (now it has nodes)
+
+    return new graph
+end
+
+function add_empty_vertex_boxes(myGraph):
+    create an empty graph
+    for every node in myGraph:
+            add node to empty graph with the following attributes:
+                - node_label
+                - order_of_labelling
+                - final_label
+                - working_values
+    
+    for every edge
 """ 

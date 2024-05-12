@@ -13,7 +13,6 @@ class DijkStep:
 
         #To store working values of nodes
         self.visited_node = None
-        self.scores = []
 
         self.nodes_and_working_values = {}
         self.edges = []
@@ -55,7 +54,7 @@ class PriorityQ:
         return len(self.queue)
     
     #Going through the queue and inserting item_to_queue when it's value is more than an item in the queue at a certein index
-    def push(self, label, value):
+    def enqueue(self, label, value):
         item_to_queue = QueuedItem(label, value)
         if len(self.queue) == 0: self.queue.append(item_to_queue)
         else:
@@ -68,7 +67,7 @@ class PriorityQ:
                 if i == len(self.queue) - 1:
                     self.queue.append(item_to_queue)
 
-    def pop(self, label=None):
+    def dequeue(self, label=None):
         if label:
             for item in self.queue:
                 if item.label == label:
@@ -148,7 +147,7 @@ class DijkstraAlgo:
             #Where graph changes are stored for each step
             vertex_boxes = self.previous_step_vertex_boxes()
 
-            node_and_distance = self.unvisited_nodes_q.pop()
+            node_and_distance = self.unvisited_nodes_q.dequeue()
             current_node = node_and_distance.label
             vertex_boxes[current_node][1] = step_counter
 
@@ -177,7 +176,7 @@ class DijkstraAlgo:
                         vertex_boxes[connected_node][3].append(new_score) ###### UPDATING WORKING VALUES NEEDS TO BE REVISITED #####
                         self.scores[connected_node] = new_score
                         self.previous_node[connected_node] = current_node
-                        self.unvisited_nodes_q.push(connected_node, new_score)
+                        self.unvisited_nodes_q.enqueue(connected_node, new_score)
                 
             step_counter += 1
             self.steps.append(vertex_boxes)
