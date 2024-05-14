@@ -190,8 +190,3 @@ class DijkstraAlgo:
         for step in self.steps:
             print("\n")
             print(step)
-
-g = graph_adjuster()[0]
-algo = DijkstraAlgo(g)
-algo.execute()
-algo.show_algorithm_end()
